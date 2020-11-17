@@ -23,7 +23,7 @@ Exceptions
 
 Functions
 --------
-get_master_bias: computes and returns the master bias combininf all the bias frames with the method and clip requested.
+get_master: computes and returns the master frame combining all the frames of a kind with the method and clip requested.
 
 """
 
@@ -80,31 +80,64 @@ class ImageStats():
         
 
         """
-        self.std = np.std(data[xmin:xmax, ymin:ymax])
-        self.mean = np.mean(data[xmin:xmax, ymin:ymax])
-        self.median = np.mean(data[xmin:xmax, ymin:ymax])
+        self.std = np.std(data[ymin:ymax, xmin:xmax]) # frame data: y-axis is the first and x-axis is the second  
+        self.mean = np.mean(data[ymin:ymax, xmin:xmax])
+        self.median = np.mean(data[ymin:ymax, xmin:xmax])
+
+    def counts_of_interest(self, data, xmin, xmax, ymin, ymax, threshold):
+        """A method for counting how many pixels of a frame within a specified window are higher than a given threshold.
+        Defines a new attributes of an object of class image_stats: px_perc 
+
+        Parameters
+    	-----------
+        data: ndarray
+            2d array with pixel values of a frame 
+    	xmin: float
+            lower limit in the x-axis of the desired window for the statistics 
+    	xmax: float
+            upper limit in the x-axis of the desired window for the statistics 
+    	ymin: float
+            lower limit in the y-axis of the desired window for the statistics 
+    	ymax: float
+            upper limit in the y-axis of the desired window for the statistics
+        threshold: float
+            threshold used to compare the pixel values 
+            
+        Returns
+        ----------
+        self.mask_high_counts: ndarray
+            2d array with boolean pixel value describing a mask of high counts
+        
+
+        """
+        self.mask_high_counts = np.where(data > threshold, 1, 0)
+        px_high_counts = self.mask_high_counts[ymin:ymax, xmin:xmax].sum()
+        px_tot = (xmax - xmin) * (ymax - ymin)
+        self.px_perc = px_high_counts / px_tot * 100
+
+        return self.mask_high_counts
 
 
 # A function to combine the bias frames into the master bias        
-def get_master_bias(bias_array, method="mean", n_clip=5):
-    """Computes and returns the master bias combininf all the bias frames with the method and clip requested.
+def get_master(frames_array, method="mean", n_clip=5):
+    """Computes and returns the master frame combining all the frames of a kind with the method and clip requested.
 
     
     Parameters
     -----------
-    bias_array : ndarray
-        array of bias frames of shape (n_frames, ydim, xdim) with their pixel values
+    frames_array : ndarray
+        array of frames of shape (n_frames, ydim, xdim) with their pixel values
     method: string
-        specifies the method for combining the bias frames. Two options available: (1) "mean" or (2) "median"
+        specifies the method for combining the frames. Two options available: (1) "mean" or (2) "median"
     n_clip: float
         factor that indicates the threshold above which pixels will be rejected from the combination
         pixels with values distant more than n_clip * std from the mean will be rejected 
-        std and mean are computed for each pixel along the array of bias frames
+        std and mean are computed for each pixel along the array of frames
     
     Returns
     -----------
-    MasterBias : ndarray
-        array of shape (ydim, xdim) representing the master bias frame, obtained combining all the bias frames
+    master_frame : ndarray
+        array of shape (ydim, xdim) representing the master frame, obtained combining all the frames
 
     Exceptions
     ----------
@@ -116,24 +149,24 @@ def get_master_bias(bias_array, method="mean", n_clip=5):
     if n_clip <= 0:
         raise Exception("Error: please choose a positive number for n_clip.") 
     
-    std_frame = np.std(bias_array, axis=0)
-    mean_frame = np.mean(bias_array, axis=0)
+    std_frame = np.std(frames_array, axis=0)
+    mean_frame = np.mean(frames_array, axis=0)
     
     # I don't like this way of clipping very much because it relies on nanmean and nanmedian
-    clipped_bias_array = []
-    for bias in bias_array:
-        clip_frame = np.abs(bias - mean_frame) < n_clip * std_frame
-        clipped_frame = np.where(clip_frame, bias, np.nan)
-        clipped_frame.reshape((bias.shape))
-        clipped_bias_array.append(clipped_frame)
+    clipped_frames_array = []
+    for frame in frames_array:
+        clip_frame = np.abs(frame - mean_frame) < n_clip * std_frame
+        clipped_frame = np.where(clip_frame, frame, np.nan)
+        clipped_frame.reshape((frame.shape))
+        clipped_frames_array.append(clipped_frame)
     
     if method == "mean":
-        return np.nanmean(clipped_bias_array, axis=0)
+        return np.nanmean(clipped_frames_array, axis=0)
     
     elif method == "median":
-        return np.nanmedian(clipped_bias_array, axis=0)
+        return np.nanmedian(clipped_frames_array, axis=0)
     
-    else: raise Exception("Error: please specify one of the two following methods for combining the bias frames: (1) mean or (2) median")
+    else: raise Exception("Error: please specify one of the two following methods for combining the frames: (1) mean or (2) median")
 
 
 
