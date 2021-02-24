@@ -1,4 +1,15 @@
-""" This is a module to use for the data reduction of optical spectroscopy with the designed jupyter notebooks.
+""" 
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+data_reduction.py: this is a module to use for the data reduction of optical spectroscopy with the designed jupyter notebooks.
 
 The notebooks have been developed for the master course Observational Techniques II at the department of Astronomy, SU.
 Teacher: Matthew Hayes
