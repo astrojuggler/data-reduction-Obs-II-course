@@ -1,4 +1,7 @@
 # data-reduction-Obs-II-course
+
+PLEASE CITE THE AUTHORS (MATTIA SIRRESSI AND MATTHEW HAYES) AND THE FUNDING INSTITUTION (STOCKHOLM UNIVERSITY - DEPARTMENT OF ASTRONOMY) IF YOU DECIDE TO USE AND/OR SHARE THIS MATERIAL.
+
 Material of the master-level course "Observational Astrophysics II" at the Department of Astronomy of Stockholm University.
 
 Developer: Mattia Sirressi;
@@ -18,4 +21,4 @@ You will find most of the information you need to run the notebooks in the first
 
 This project has been financed by Stockholm University - Department of Astronomy with a grant earned by Matthew Hayes.
 
-PLEASE CITE THE AUTHORS (MATTIA SIRRESSI AND MATTHEW HAYES) AND THE FUNDING INSTITUTION (STOCKHOLM UNIVERSITY - DEPARTMENT OF ASTRONOMY) IF YOU DECIDE TO USE AND/OR SHARE THIS MATERIAL.
+
